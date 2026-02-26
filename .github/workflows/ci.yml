@@ -13,9 +13,6 @@ on:
 jobs:
   test:
     runs-on: [self-hosted, local]
-    defaults:
-      run:
-        working-directory: migration-copilot
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

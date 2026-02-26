@@ -12,9 +12,6 @@ on:
 jobs:
   sync-formula:
     runs-on: [self-hosted, local]
-    defaults:
-      run:
-        working-directory: migration-copilot
     steps:
       - uses: actions/checkout@v4
 
@@ -44,8 +41,8 @@ jobs:
 
       - name: Sync formula to tap
         run: |
-          mkdir -p ../tap/Formula
-          cp Formula/ingress-migration-copilot.rb ../tap/Formula/ingress-migration-copilot.rb
+          mkdir -p tap/Formula
+          cp Formula/ingress-migration-copilot.rb tap/Formula/ingress-migration-copilot.rb
 
       - name: Commit and push
         working-directory: tap
