@@ -3,14 +3,16 @@ set -euo pipefail
 
 FORMULA_PATH="Formula/ingress-migration-copilot.rb"
 VERSION="${1:-}"
-LOCAL_TARBALL="${2:-}"
 
 if [[ -z "$VERSION" ]]; then
   VERSION="$(node -p "require('./package.json').version")"
 fi
 
-REPO_URL="$(node -p "(require('./package.json').repository || {}).url || ''")"
-REPO_SLUG="$(echo "$REPO_URL" | sed -E 's#^git\+##; s#\.git$##; s#^https://github.com/##; s#^git@github.com:##')"
+REPO_SLUG="${GITHUB_REPOSITORY:-}"
+if [[ -z "$REPO_SLUG" ]]; then
+  REPO_URL="$(node -p "(require('./package.json').repository || {}).url || ''")"
+  REPO_SLUG="$(echo "$REPO_URL" | sed -E 's#^git\+##; s#\.git$##; s#^https://github.com/##; s#^git@github.com:##')"
+fi
 
 if [[ -z "$REPO_SLUG" ]]; then
   echo "Could not infer GitHub repository from package.json repository.url" >&2
@@ -25,10 +27,18 @@ cleanup() {
 }
 trap cleanup EXIT
 
-if [[ -n "$LOCAL_TARBALL" ]]; then
-  cp "$LOCAL_TARBALL" "$TMP_FILE"
-else
-  curl -fsSL "$TARBALL_URL" -o "$TMP_FILE"
+FETCH_OK=0
+for ATTEMPT in {1..12}; do
+  if curl -fsSL "$TARBALL_URL" -o "$TMP_FILE"; then
+    FETCH_OK=1
+    break
+  fi
+  echo "Waiting for release tarball (attempt ${ATTEMPT}/12): ${TARBALL_URL}"
+  sleep 5
+done
+if [[ "$FETCH_OK" -ne 1 ]]; then
+  echo "Failed to fetch release tarball: ${TARBALL_URL}" >&2
+  exit 1
 fi
 
 SHA256="$(shasum -a 256 "$TMP_FILE" | awk '{print $1}')"

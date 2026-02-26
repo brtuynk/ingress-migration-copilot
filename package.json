@@ -9,13 +9,13 @@
     "migration",
     "cli"
   ],
-  "homepage": "https://github.com/your-org/ingress-migration-copilot",
+  "homepage": "https://github.com/brtuynk/ingress-migration-copilot",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-org/ingress-migration-copilot.git"
+    "url": "git+https://github.com/brtuynk/ingress-migration-copilot.git"
   },
   "bugs": {
-    "url": "https://github.com/your-org/ingress-migration-copilot/issues"
+    "url": "https://github.com/brtuynk/ingress-migration-copilot/issues"
   },
   "license": "Apache-2.0",
   "type": "commonjs",
