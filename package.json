@@ -22,21 +22,6 @@
   "engines": {
     "node": ">=20"
   },
-  "preferGlobal": true,
-  "files": [
-    "bin/",
-    "src/",
-    "docs/",
-    "README.md",
-    "LICENSE",
-    "CONTRIBUTING.md",
-    "SECURITY.md",
-    "CODE_OF_CONDUCT.md",
-    "ROADMAP.md"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
   "bin": {
     "mig": "./bin/mig.js"
   },
@@ -45,9 +30,7 @@
     "analyze:sample": "node ./bin/mig.js analyze --input ./fixtures/sample-ingress.yaml --format md",
     "convert:sample": "node ./bin/mig.js convert --input ./fixtures/sample-ingress.yaml --out ./out",
     "catalog:md": "node ./bin/mig.js catalog --format md --output ./docs/annotation-catalog.md",
-    "brew:formula:update": "./scripts/update-homebrew-formula.sh",
-    "prepack": "npm run test && npm run catalog:md",
-    "release:check": "npm pack --dry-run"
+    "brew:formula:update": "./scripts/update-homebrew-formula.sh"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"

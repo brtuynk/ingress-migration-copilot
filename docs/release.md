@@ -2,63 +2,47 @@
 
 ## Goal
 
-Enable users to run the tool with one command:
+Ship the CLI publicly through GitHub releases and Homebrew tap.
 
-```bash
-npx ingress-migration-copilot@latest --help
-```
+## 1. Prerequisites
 
-## 1. NPM package prerequisites
-
-1. Ensure package name is available on npm (`ingress-migration-copilot`).
-2. Set correct repository URLs in `package.json`:
+1. Ensure repository URLs in `package.json` are correct:
    - `homepage`
    - `repository.url`
    - `bugs.url`
-3. Add `NPM_TOKEN` secret in GitHub repository settings.
+2. Add GitHub repository settings:
+   - variable: `HOMEBREW_TAP_REPO` (example: `YOUR_ORG/homebrew-tap`)
+   - secret: `HOMEBREW_TAP_TOKEN` (token with push access to the tap repo)
 
-## 2. Local release check
+## 2. Validate before release
 
 Run from `migration-copilot/`:
 
 ```bash
 npm install
-npm run release:check
+npm test
+node ./bin/mig.js --help
 ```
 
-`release:check` runs `npm pack --dry-run` and shows exactly what will be published.
+## 3. Publish release
 
-## 3. Publish a release
+1. Create a Git tag and GitHub release (`v1.0.0`, `v1.0.1`, etc.).
+2. `release-homebrew` workflow will:
+   - compute SHA from `archive/refs/tags/vX.Y.Z.tar.gz`,
+   - update `Formula/ingress-migration-copilot.rb`,
+   - push formula update to your tap repo.
 
-Preferred path:
-
-1. Create a GitHub release (`v0.1.0`, `v0.1.1`, etc.).
-2. `release-npm` workflow publishes to npm automatically.
-3. Users can run:
+## 4. Post-release smoke tests
 
 ```bash
-npx ingress-migration-copilot@latest --help
+brew update
+brew tap YOUR_ORG/tap https://github.com/YOUR_ORG/homebrew-tap
+brew reinstall ingress-migration-copilot
+mig --help
 ```
 
-## 4. Emergency manual publish
-
-From `migration-copilot/`:
+## 5. Manual formula update (optional)
 
 ```bash
-npm publish --access public
-```
-
-## 5. Post-release smoke tests
-
-```bash
-npx ingress-migration-copilot@latest --help
-npx ingress-migration-copilot@latest catalog --format json
-```
-
-## 6. Homebrew sync (optional)
-
-If you maintain a tap, run the `Release Homebrew` workflow or update formula manually:
-
-```bash
-npm run brew:formula:update -- 0.1.0
+npm run brew:formula:update -- 1.0.0
 ```

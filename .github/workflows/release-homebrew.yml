@@ -11,7 +11,7 @@ on:
 
 jobs:
   sync-formula:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local]
     defaults:
       run:
         working-directory: migration-copilot

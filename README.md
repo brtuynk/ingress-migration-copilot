@@ -2,27 +2,6 @@
 
 Open-source CLI for helping teams migrate from `ingress-nginx` to `Gateway API` with an explainable compatibility score.
 
-## One-command usage
-
-No install required:
-
-```bash
-npx ingress-migration-copilot@latest --help
-```
-
-Example:
-
-```bash
-npx ingress-migration-copilot@latest analyze --input ./ingress --format md
-```
-
-Global install:
-
-```bash
-npm i -g ingress-migration-copilot
-mig --help
-```
-
 ## Homebrew (macOS)
 
 ```bash

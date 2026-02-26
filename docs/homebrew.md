@@ -1,17 +1,11 @@
 # Homebrew Packaging
 
-This project supports Homebrew distribution via a tap repository.
+This project is distributed via a Homebrew tap.
 
 ## Files in this repo
 
 - Formula source: `Formula/ingress-migration-copilot.rb`
 - Update script: `scripts/update-homebrew-formula.sh`
-
-## Recommended setup
-
-1. Keep app source in this repository.
-2. Create a separate tap repository: `homebrew-tap`.
-3. Copy `Formula/ingress-migration-copilot.rb` into the tap repo under `Formula/`.
 
 ## Install command for users
 
@@ -21,26 +15,27 @@ brew install ingress-migration-copilot
 mig --help
 ```
 
-## Update formula after each npm release
+## Formula source URL
+
+The formula points to GitHub tag archives:
+
+```text
+https://github.com/<owner>/<repo>/archive/refs/tags/v<version>.tar.gz
+```
+
+## Update formula after each release
 
 Run from project root:
 
 ```bash
-npm run brew:formula:update -- 0.1.0
+npm run brew:formula:update -- 1.0.0
 ```
 
-This updates `url` and `sha256` in `Formula/ingress-migration-copilot.rb` using the npm tarball.
-
-If npm is not published yet, pass a local tarball:
-
-```bash
-npm pack
-npm run brew:formula:update -- 0.1.0 ./ingress-migration-copilot-0.1.0.tgz
-```
+This updates `url` and `sha256` in `Formula/ingress-migration-copilot.rb`.
 
 ## Optional automation workflow
 
-`release-homebrew.yml` can sync the formula to your tap repository.
+`release-homebrew.yml` can sync formula updates to your tap repository.
 
 Required repository settings:
 
@@ -51,11 +46,4 @@ Required repository settings:
 
 ```bash
 ruby -c Formula/ingress-migration-copilot.rb
-```
-
-Optional with local tap checkout:
-
-```bash
-brew install --build-from-source ./Formula/ingress-migration-copilot.rb
-mig --help
 ```
