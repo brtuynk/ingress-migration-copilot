@@ -1,0 +1,58 @@
+name: Release Homebrew
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to sync (ex: 0.1.0)"
+        required: true
+
+jobs:
+  sync-formula:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: migration-copilot
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Resolve version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Update formula in source repo
+        run: npm run brew:formula:update -- ${{ steps.version.outputs.value }}
+
+      - name: Checkout tap repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.HOMEBREW_TAP_REPO }}
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap
+
+      - name: Sync formula to tap
+        run: |
+          mkdir -p ../tap/Formula
+          cp Formula/ingress-migration-copilot.rb ../tap/Formula/ingress-migration-copilot.rb
+
+      - name: Commit and push
+        working-directory: tap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/ingress-migration-copilot.rb
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: bump ingress-migration-copilot ${{ steps.version.outputs.value }}"
+          git push

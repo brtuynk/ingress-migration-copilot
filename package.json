@@ -1,0 +1,55 @@
+{
+  "name": "ingress-migration-copilot",
+  "version": "0.1.0",
+  "description": "Analyze and convert ingress-nginx resources to Gateway API manifests with migration risk scoring.",
+  "keywords": [
+    "kubernetes",
+    "ingress-nginx",
+    "gateway-api",
+    "migration",
+    "cli"
+  ],
+  "homepage": "https://github.com/your-org/ingress-migration-copilot",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/ingress-migration-copilot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/ingress-migration-copilot/issues"
+  },
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "preferGlobal": true,
+  "files": [
+    "bin/",
+    "src/",
+    "docs/",
+    "README.md",
+    "LICENSE",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
+    "CODE_OF_CONDUCT.md",
+    "ROADMAP.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "mig": "./bin/mig.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "analyze:sample": "node ./bin/mig.js analyze --input ./fixtures/sample-ingress.yaml --format md",
+    "convert:sample": "node ./bin/mig.js convert --input ./fixtures/sample-ingress.yaml --out ./out",
+    "catalog:md": "node ./bin/mig.js catalog --format md --output ./docs/annotation-catalog.md",
+    "brew:formula:update": "./scripts/update-homebrew-formula.sh",
+    "prepack": "npm run test && npm run catalog:md",
+    "release:check": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
