@@ -40,6 +40,7 @@ This updates `url` and `sha256` in `Formula/ingress-migration-copilot.rb`.
 Required repository settings:
 
 - variable: `HOMEBREW_TAP_REPO` (example: `YOUR_ORG/homebrew-tap`)
+- variable: `HOMEBREW_TAP_BRANCH` (optional, default: `main`)
 - secret: `HOMEBREW_TAP_TOKEN` (token with push access to tap repo)
 
 ## Validate formula locally

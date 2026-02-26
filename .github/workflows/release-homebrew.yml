@@ -15,6 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Resolve tap branch
+        id: tap_branch
+        env:
+          HOMEBREW_TAP_BRANCH: ${{ vars.HOMEBREW_TAP_BRANCH }}
+        run: |
+          BRANCH="${HOMEBREW_TAP_BRANCH:-main}"
+          echo "value=$BRANCH" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -38,6 +46,7 @@ jobs:
           repository: ${{ vars.HOMEBREW_TAP_REPO }}
           token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           path: tap
+          ref: ${{ steps.tap_branch.outputs.value }}
 
       - name: Sync formula to tap
         run: |
@@ -46,10 +55,13 @@ jobs:
 
       - name: Commit and push
         working-directory: tap
+        env:
+          TAP_BRANCH: ${{ steps.tap_branch.outputs.value }}
         run: |
+          git checkout -B "$TAP_BRANCH"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add Formula/ingress-migration-copilot.rb
           git diff --cached --quiet && exit 0
           git commit -m "chore: bump ingress-migration-copilot ${{ steps.version.outputs.value }}"
-          git push
+          git push origin "HEAD:${TAP_BRANCH}"

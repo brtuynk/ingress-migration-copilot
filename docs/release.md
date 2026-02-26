@@ -12,6 +12,7 @@ Ship the CLI publicly through GitHub releases and Homebrew tap.
    - `bugs.url`
 2. Add GitHub repository settings:
    - variable: `HOMEBREW_TAP_REPO` (example: `YOUR_ORG/homebrew-tap`)
+   - variable: `HOMEBREW_TAP_BRANCH` (optional, default: `main`)
    - secret: `HOMEBREW_TAP_TOKEN` (token with push access to the tap repo)
 
 ## 2. Validate before release
